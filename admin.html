@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - ESPOCH</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Bloque de Login -->
+        <div id="seccion-login">
+            <h2>Control de Administrador</h2>
+            <div class="form-group">
+                <label>Usuario:</label>
+                <input type="text" id="usuario" placeholder="Ej. Juan">
+            </div>
+            <div class="form-group">
+                <label>Contraseña:</label>
+                <input type="password" id="password" placeholder="123">
+            </div>
+            <button id="btn-login">Ingresar</button>
+            <p id="error-login" style="color: red; display: none;">Datos incorrectos</p>
+        </div>
+
+        <!-- Bloque de Gestión de Preguntas (Oculto al inicio) -->
+        <div id="seccion-admin" style="display: none;">
+            <h2>Panel de Preguntas</h2>
+            <div class="form-group">
+                <label>Escribe la Pregunta:</label>
+                <input type="text" id="nueva-pregunta" placeholder="¿Qué opina del servicio?">
+            </div>
+            <div class="form-group">
+                <label>Opciones (Sepáralas por comas):</label>
+                <input type="text" id="opciones-pregunta" placeholder="Excelente, Bueno, Malo">
+            </div>
+            <button id="btn-agregar">Agregar Pregunta</button>
+
+            <h3>Preguntas Actuales</h3>
+            <div id="lista-preguntas-admin"></div>
+            
+            <button id="btn-cerrar-sesion" class="btn-alt">Cerrar Sesión</button>
+        </div>
+    </div>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

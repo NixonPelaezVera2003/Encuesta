@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta ESPOCH</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Cargamos la librería de EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header-espoch">
+            <img src="logo-espoch.png" alt="Logo ESPOCH" class="logo">
+            <h1>Encuesta Institucional</h1>
+        </header>
+
+        <form id="form-encuesta">
+            <div id="contenedor-preguntas">
+                <!-- Las preguntas se cargarán aquí dinámicamente con JS -->
+            </div>
+            <button type="submit" id="btn-enviar">Enviar Encuesta</button>
+        </form>
+        
+        <div class="footer-links">
+            <a href="admin.html">Acceso Administrador</a>
+        </div>
+    </div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/emailjs.min.js"></script>
+
+    <script src="js/encuesta.js"></script>
+</body>
+</html>
