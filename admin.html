@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Bloque de Login -->
         <div id="seccion-login">
             <h2>Control de Administrador</h2>
             <div class="form-group">
@@ -23,8 +22,7 @@
             <p id="error-login" style="color: red; display: none;">Datos incorrectos</p>
         </div>
 
-        <!-- Bloque de Gestión de Preguntas (Oculto al inicio) -->
-<div id="seccion-admin" style="display: none;">
+        <div id="seccion-admin" style="display: none;">
             <h2>Panel de Preguntas</h2>
             
             <div class="form-group">
@@ -52,10 +50,9 @@
             
             <button id="btn-cerrar-sesion" class="btn-alt">Cerrar Sesión</button>
         </div>
+    </div>
 
-
-
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script src="js/admin.js"></script>
