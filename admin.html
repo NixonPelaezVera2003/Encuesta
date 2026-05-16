@@ -13,27 +13,38 @@
             <h2>Control de Administrador</h2>
             <div class="form-group">
                 <label>Usuario:</label>
-                <input type="text" id="usuario" placeholder=" ">
+                <input type="text" id="usuario" placeholder="Ej. Juan">
             </div>
             <div class="form-group">
                 <label>Contraseña:</label>
-                <input type="password" id="password" placeholder=" ">
+                <input type="password" id="password" placeholder="123">
             </div>
             <button id="btn-login">Ingresar</button>
             <p id="error-login" style="color: red; display: none;">Datos incorrectos</p>
         </div>
 
         <!-- Bloque de Gestión de Preguntas (Oculto al inicio) -->
-        <div id="seccion-admin" style="display: none;">
+<div id="seccion-admin" style="display: none;">
             <h2>Panel de Preguntas</h2>
+            
             <div class="form-group">
                 <label>Escribe la Pregunta:</label>
-                <input type="text" id="nueva-pregunta" placeholder="¿Qué opina del servicio?">
+                <input type="text" id="nueva-pregunta" placeholder="¿Qué opina del servicio? o Escribe tu Nombre">
             </div>
+
             <div class="form-group">
+                <label>Tipo de Pregunta:</label>
+                <select id="tipo-pregunta" style="width: 100%; padding: 8px; margin-bottom: 15px;">
+                    <option value="opciones">Opción Múltiple (Separadas por comas)</option>
+                    <option value="libre">Respuesta Libre (Cuadro de texto)</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="contenedor-campo-opciones">
                 <label>Opciones (Sepáralas por comas):</label>
                 <input type="text" id="opciones-pregunta" placeholder="Excelente, Bueno, Malo">
             </div>
+            
             <button id="btn-agregar">Agregar Pregunta</button>
 
             <h3>Preguntas Actuales</h3>
