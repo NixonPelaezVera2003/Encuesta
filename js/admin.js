@@ -1,5 +1,5 @@
 // =========================================================================
-// CONFIGURACIÓN E INICIALIZACIÓN DE FIREBASE (CON TUS CREDENCIALES)
+// CONFIGURACIÓN E INICIALIZACIÓN DE FIREBASE
 // =========================================================================
 const firebaseConfig = {
     apiKey: "AIzaSyCakKGLdIFJ8CM0FFCPCsL7PQoI7W5ZlP0",
@@ -11,14 +11,11 @@ const firebaseConfig = {
     appId: "1:1006081354037:web:46e076cd516380cada447c"
 };
 
-// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Esperar a que todo el HTML esté cargado en el navegador
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Mapeo exacto de los IDs de tu archivo HTML
     const seccionLogin = document.getElementById('seccion-login');
     const seccionAdmin = document.getElementById('seccion-admin');
     
@@ -28,12 +25,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorLogin = document.getElementById('error-login');
 
     const inputNuevaPregunta = document.getElementById('nueva-pregunta');
+    const selectTipoPregunta = document.getElementById('tipo-pregunta');
+    const contenedorCampoOpciones = document.getElementById('contenedor-campo-opciones');
     const inputOpcionesPregunta = document.getElementById('opciones-pregunta');
     const btnAgregar = document.getElementById('btn-agregar');
     const listaPreguntasAdmin = document.getElementById('lista-preguntas-admin');
     const btnCerrarSesion = document.getElementById('btn-cerrar-sesion');
 
-    // 1. CONTROL DE ACCESO (HACIENDO CLIC EN EL BOTÓN "INGRESAR")
+    // CONTROL VISUAL: Ocultar o mostrar opciones según el tipo elegido
+    selectTipoPregunta.addEventListener('change', () => {
+        if (selectTipoPregunta.value === 'libre') {
+            contenedorCampoOpciones.style.display = 'none'; // Esconde las opciones
+        } else {
+            contenedorCampoOpciones.style.display = 'block'; // Muestra las opciones
+        }
+    });
+
+    // 1. CONTROL DE ACCESO
     btnLogin.addEventListener('click', () => {
         const usuario = inputUsuario.value.trim();
         const contrasena = inputPassword.value.trim();
@@ -42,25 +50,20 @@ document.addEventListener("DOMContentLoaded", () => {
             seccionLogin.style.display = 'none';
             seccionAdmin.style.display = 'block';
             if (errorLogin) errorLogin.style.display = 'none';
-            
-            escucharPreguntasEnNube(); // Cargar datos reales desde Firebase
+            escucharPreguntasEnNube(); 
         } else {
-            if (errorLogin) {
-                errorLogin.style.display = 'block'; // Mostrar el texto rojo de tu HTML
-            } else {
-                alert("Datos incorrectos");
-            }
+            if (errorLogin) errorLogin.style.display = 'block';
         }
     });
 
-    // 2. FUNCIÓN PARA LEER LAS PREGUNTAS DESDE FIREBASE EN TIEMPO REAL
+    // 2. LEER LAS PREGUNTAS DESDE FIREBASE EN TIEMPO REAL
     function escucharPreguntasEnNube() {
         db.ref('preguntas').on('value', (snapshot) => {
             listaPreguntasAdmin.innerHTML = "";
             const datos = snapshot.val();
             
             if (!datos) {
-                listaPreguntasAdmin.innerHTML = "<p style='color: #666; font-style: italic;'>No hay preguntas creadas en internet todavía.</p>";
+                listaPreguntasAdmin.innerHTML = "<p style='color: #666; font-style: italic;'>No hay preguntas en internet todavía.</p>";
                 return;
             }
 
@@ -74,8 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 div.style.border = "1px solid #ddd";
                 div.style.borderRadius = "4px";
 
+                // Mostrar de forma diferente si es libre o de opción
+                const detalleTipo = p.tipo === "libre" ? "Respuesta Libre (Texto)" : `Opciones: ${p.opciones.join(', ')}`;
+
                 div.innerHTML = `
-                    <p style='margin: 0 0 8px 0;'><strong>${index}. ${p.pregunta}</strong> <br><small style='color:#555;'>Opciones: ${p.opciones.join(', ')}</small></p>
+                    <p style='margin: 0 0 8px 0;'><strong>${index}. ${p.pregunta}</strong> <br><small style='color:#555;'>Tipo: ${detalleTipo}</small></p>
                     <button class="btn-alt" style="background-color: #d9534f; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;" onclick="eliminarPregunta('${idFirebase}')">Eliminar</button>
                 `;
                 listaPreguntasAdmin.appendChild(div);
@@ -84,33 +90,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 3. FUNCIÓN PARA AGREGAR UNA NUEVA PREGUNTA A LA NUBE
+    // 3. FUNCIÓN PARA AGREGAR LA PREGUNTA CON SU TIPO
     btnAgregar.addEventListener('click', () => {
         const textoPregunta = inputNuevaPregunta.value.trim();
-        const textoOpciones = inputOpcionesPregunta.value.trim();
+        const tipoSeleccionado = selectTipoPregunta.value;
+        let opcionesArray = [];
 
-        if (textoPregunta === "" || textoOpciones === "") {
-            alert("Por favor, llena ambos campos para continuar.");
+        if (textoPregunta === "") {
+            alert("Por favor, escribe la pregunta.");
             return;
         }
 
-        // Convertir el texto separado por comas en un arreglo limpio
-        const opcionesArray = textoOpciones.split(',').map(op => op.trim()).filter(op => op !== "");
+        // Si es de tipo opciones, validamos el campo de opciones
+        if (tipoSeleccionado === "opciones") {
+            const textoOpciones = inputOpcionesPregunta.value.trim();
+            opcionesArray = textoOpciones.split(',').map(op => op.trim()).filter(op => op !== "");
 
-        if (opcionesArray.length < 2) {
-            alert("Por favor, ingresa al menos 2 opciones separadas por comas (ej: Excelente, Bueno).");
-            return;
+            if (opcionesArray.length < 2) {
+                alert("Por favor, ingresa al menos 2 opciones separadas por comas.");
+                return;
+            }
         }
 
-        // Empujar datos a Firebase
+        // Guardar estructura dinámica en Firebase
         db.ref('preguntas').push({
             pregunta: textoPregunta,
-            opciones: opcionesArray
+            tipo: tipoSeleccionado,
+            opciones: opcionesArray // Irá vacío si es libre
         })
         .then(() => {
-            // Limpiar inputs al terminar de guardar con éxito
             inputNuevaPregunta.value = "";
             inputOpcionesPregunta.value = "";
+            selectTipoPregunta.value = "opciones";
+            contenedorCampoOpciones.style.display = 'block';
         })
         .catch((error) => {
             alert("Error de conexión con Firebase: " + error.message);
@@ -119,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 4. FUNCIÓN PARA ELIMINAR PREGUNTAS
     window.eliminarPregunta = function(idFirebase) {
-        if (confirm("¿Estás seguro de que deseas eliminar esta pregunta de internet?")) {
+        if (confirm("¿Estás seguro de que deseas eliminar esta pregunta?")) {
             db.ref(`preguntas/${idFirebase}`).remove()
             .catch((error) => {
                 alert("Error al eliminar: " + error.message);
